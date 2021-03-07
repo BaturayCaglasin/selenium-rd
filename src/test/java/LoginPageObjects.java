@@ -114,7 +114,7 @@ protected void type(String text,WebElement CHOOSEFIELDLOCATOR){
 }
 public void chooseFiles(String file_name){
 log.info("Selecting the files"+file_name);
-String FILE_PATH=System.getProperty("user.dir")+"src/main/resources/pic.jpeg"+file_name;
+String FILE_PATH=System.getProperty("user.dir")+"//src//main//resources//"+file_name;
 type(FILE_PATH,CHOOSEFIELDLOCATOR);
 log.info("File is selected");
 
@@ -123,9 +123,8 @@ log.info("File is selected");
 // uploading files
         public void imageUploadTest(){
             log.info("Clicking the upload button");
-            CHOOSEFIELDLOCATOR.click();
+            UPLOADBUTTONLOCATOR.click();
+            log.info("Clicked the upload button");
 
         }
-
-
     }

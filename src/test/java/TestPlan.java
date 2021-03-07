@@ -5,13 +5,13 @@ import org.openqa.selenium.support.PageFactory;
 import org.testng.Assert;
 import org.testng.ITestContext;
 import org.testng.annotations.*;
+import CsvDataProviders.CsvDataProviders;
 
-public class TestPlan {
+import java.util.Map;
 
-
+public class TestPlan extends Utils {
     protected  WebDriver driver;
     protected Logger log;
-    String file_name ="pic.jpeg";
 
     @Parameters({ "browser" })
 
@@ -25,16 +25,22 @@ public class TestPlan {
     DriverFactory factory = new DriverFactory(browser,log);
     driver = factory.createDriver();
     driver.manage().window().maximize();
-
-
     }
 
 
-    @Test(priority = 1,testName = "Search on Google")
+    @Test(dataProvider = "csvReader", dataProviderClass = CsvDataProviders.class,priority = 1,testName = "Search on Google")
+    public void search(Map<String, String> testData){
 
-    public void search(){
+        //****Data Driven Test****
+
+        String no = testData.get("no");
+        String  username = testData.get("username");
+        String password = testData.get("password");
+        String expectedMessage =testData.get("expectedMessage");
+        String description = testData.get("description");
 
         log.info("Opening the page: "+ Utils.BASE_URL);
+        log.info("Starting data test: "+ no+"for"+description);
         driver.get(Utils.TEST1_URL);
         LoginPageObjects page = new LoginPageObjects(driver,log);
         PageFactory.initElements(driver, page);
@@ -42,7 +48,6 @@ public class TestPlan {
         page.search();
 
     }
-
 
     @Test (priority = 2,testName = "Checkbox control")
         public void checkboxes(){
@@ -72,10 +77,10 @@ page.assertionAlert();
 page.acceptAlert();
     }
 
-@Test (priority = 4,testName = "Upload a file")
-        public void uploadFile(){
+@Test (dataProvider = "files", priority = 4,testName = "Upload a file")
+        public void uploadFile(int testno, String file_name){
         log.info("Opening the page"+Utils.UPLOADING_URL);
-        log.info("Starting upload file test");
+        log.info("Starting upload file test No:" +testno+ "for"+ file_name);
         driver.get(Utils.UPLOADING_URL);
         LoginPageObjects page = new LoginPageObjects(driver,log);
         PageFactory.initElements(driver,page);
