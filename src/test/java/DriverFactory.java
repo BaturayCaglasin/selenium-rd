@@ -2,7 +2,10 @@ import org.apache.logging.log4j.Logger;
 import org.openqa.selenium.UnexpectedAlertBehaviour;
 import org.openqa.selenium.WebDriver;
 import org.openqa.selenium.chrome.ChromeDriver;
+import org.openqa.selenium.chrome.ChromeOptions;
+import org.openqa.selenium.firefox.FirefoxBinary;
 import org.openqa.selenium.firefox.FirefoxDriver;
+import org.openqa.selenium.firefox.FirefoxOptions;
 import org.openqa.selenium.remote.CapabilityType;
 import org.openqa.selenium.remote.DesiredCapabilities;
 
@@ -30,9 +33,38 @@ public class DriverFactory {
                 driver.set(new ChromeDriver(capabilities));
                 break;
 
+            case "chromeHeadless":
+
+                System.setProperty("webdriver.chrome.driver",Utils.CHROME_DRIVER_LOCATION);
+                ChromeOptions chromeOptions = new ChromeOptions();
+                chromeOptions.addArguments("--headless");
+                driver.set(new ChromeDriver(capabilities));
+                break;
+
+
             case "firefox":
                 System.setProperty("webdriver.gecko.driver", "src/main/resources/geckodriver.exe");
                driver.set(new FirefoxDriver());
+                break;
+
+            case "firefoxheadless":
+                System.setProperty("webdriver.gecko.driver", "src/main/resources/geckodriver.exe");
+                FirefoxBinary firefoxBinary = new FirefoxBinary();
+                firefoxBinary.addCommandLineOptions("--headless");
+                FirefoxOptions firefoxOptions = new FirefoxOptions();
+                firefoxOptions.setBinary(firefoxBinary);
+                driver.set(new FirefoxDriver());
+                break;
+
+
+            case "phantomjs":
+                //System.setProperty("webdriver.gecko.driver", "src/main/resources/geckodriver.exe");
+                driver.set(new FirefoxDriver()); //new PhantomJSDriver
+                break;
+
+            case "htmlunit":
+                //System.setProperty("webdriver.gecko.driver", "src/main/resources/geckodriver.exe");
+                driver.set(new FirefoxDriver()); //new HtmlUnitDriver
                 break;
 
             default:

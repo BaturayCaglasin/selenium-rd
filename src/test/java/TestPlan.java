@@ -1,3 +1,7 @@
+// log4j for logging
+//dataprovider for data driven framework
+//@Listener annotation for test listener. Should add a listener class.
+
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import org.openqa.selenium.WebDriver;
@@ -6,12 +10,26 @@ import org.testng.Assert;
 import org.testng.ITestContext;
 import org.testng.annotations.*;
 import CsvDataProviders.CsvDataProviders;
+import org.testng.asserts.SoftAssert;
 
+import java.lang.reflect.Method;
 import java.util.Map;
 
-public class TestPlan extends Utils {
+public class TestPlan {
     protected  WebDriver driver;
     protected Logger log;
+
+    protected String testSuiteName;
+    protected String testName;
+    protected String testMethodName;
+
+    @DataProvider(name="files")
+    protected static Object[][] files(){
+        return new Object[][]{
+                {1,"pic.jpeg"}
+        };
+
+    }
 
     @Parameters({ "browser" })
 
@@ -25,8 +43,13 @@ public class TestPlan extends Utils {
     DriverFactory factory = new DriverFactory(browser,log);
     driver = factory.createDriver();
     driver.manage().window().maximize();
-    }
 
+    this.testSuiteName=ctx.getSuite().getName();
+    this.testName=testName;
+    //this.testMethodName=method.getName();
+
+
+    }
 
     @Test(dataProvider = "csvReader", dataProviderClass = CsvDataProviders.class,priority = 1,testName = "Search on Google")
     public void search(Map<String, String> testData){
@@ -87,6 +110,12 @@ page.acceptAlert();
         page.chooseFiles(file_name);
         page.imageUploadTest();
 
+        SoftAssert softAssert = new SoftAssert();
+        softAssert.assertEquals("File Uploaded!","File Uploaded!");
+        log.info("File is uploaded.");
+         Utils utils = new Utils(driver,log);
+        utils.takeScreenshot("File Uploaded!");
+
     }
 
     @AfterSuite(alwaysRun = true)
@@ -96,5 +125,11 @@ page.acceptAlert();
         driver.manage().deleteAllCookies();
         driver.close();
     }
+
+    //***ASSERTIONS***
+
+    //soft assert; test esnasında hata meydana geldiğinde bunu log'lar ve test bitene kadar step'lerin akışı devam eder.
+    //hard assert ise test esnasında bir hata meydana geldiği zaman direkt hata fırlatarak testi sonlandırır ve bir sonraki teste devam edilir.
+
 
 }
